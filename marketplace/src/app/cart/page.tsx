@@ -1,7 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/store/cart";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/utils";
 import { Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

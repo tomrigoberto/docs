@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "./AddToCartButton";
 import { Download, Star, Clock, FileType, User } from "lucide-react";
 import Link from "next/link";

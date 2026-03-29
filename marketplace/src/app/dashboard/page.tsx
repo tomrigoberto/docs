@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { DollarSign, Package, TrendingUp, Plus, BarChart3 } from "lucide-react";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/utils";
 
 interface DashboardData {
   templates: any[];

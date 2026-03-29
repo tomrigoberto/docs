@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Download, Star } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import { formatPrice } from "@/lib/stripe";
+import { formatPrice } from "@/lib/utils";
 
 interface TemplateCardProps {
   id: string;
