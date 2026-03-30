@@ -8,70 +8,116 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String     @unique
-  passwordHash  String
-  role          String     @default("buyer") // buyer | creator | admin
-  avatar        String?
-  bio           String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  templates     Template[]
-  purchases     Purchase[]
-  reviews       Review[]
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  avatar       String?
+  bio          String?
+  latitude     Float?
+  longitude    Float?
+  city         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  dogs         Dog[]
+  reviews      Review[]
+  placesAdded  Place[]   @relation("PlaceAddedBy")
 }
 
-model Category {
-  id        String     @id @default(cuid())
-  name      String     @unique
-  slug      String     @unique
-  icon      String?
-  templates Template[]
+model Dog {
+  id        String   @id @default(cuid())
+  name      String
+  breed     String?
+  age       Int?
+  size      String   @default("MEDIUM") // SMALL, MEDIUM, LARGE, XLARGE
+  weight    Float?
+  avatar    String?
+  bio       String?
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sentRequests     FriendRequest[] @relation("FriendFrom")
+  receivedRequests FriendRequest[] @relation("FriendTo")
 }
 
-model Template {
-  id          String     @id @default(cuid())
-  title       String
-  slug        String     @unique
-  description String
-  longDesc    String?
-  price       Float
-  salePrice   Float?
-  format      String     // e.g., "figma", "notion", "canva", "psd", "docx"
-  previewUrl  String?
-  fileUrl     String?
-  downloads   Int        @default(0)
-  featured    Boolean    @default(false)
-  published   Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  creator     User       @relation(fields: [creatorId], references: [id])
-  creatorId   String
-  category    Category   @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  purchases   Purchase[]
+model Place {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // RESTAURANT, CAFE, DOG_PARK, PET_STORE, VET, GROOMER, BREWERY, HOTEL, BEACH, TRAIL, OTHER
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  latitude    Float
+  longitude   Float
+  phone       String?
+  website     String?
+  description String?
+  photo       String?
+  addedById   String
+  addedBy     User     @relation("PlaceAddedBy", fields: [addedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   reviews     Review[]
-}
 
-model Purchase {
-  id              String   @id @default(cuid())
-  amount          Float
-  stripePaymentId String?
-  createdAt       DateTime @default(now())
-  user            User     @relation(fields: [userId], references: [id])
-  userId          String
-  template        Template @relation(fields: [templateId], references: [id])
-  templateId      String
+  // Yes/No features
+  hasWater         Boolean @default(false)
+  hasFreeTreats    Boolean @default(false)
+  patioFriendly    Boolean @default(false)
+  canComeInside    Boolean @default(false)
+  hasWasteStations Boolean @default(false)
+  isOffLeashOk     Boolean @default(false)
+  hasFencedArea    Boolean @default(false)
+  hasParking       Boolean @default(false)
+  hasDogMenu       Boolean @default(false)
 }
 
 model Review {
-  id         String   @id @default(cuid())
-  rating     Int
-  comment    String?
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  template   Template @relation(fields: [templateId], references: [id])
-  templateId String
+  id      String @id @default(cuid())
+  placeId String
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Overall rating 1-5 paws
+  overallRating Int
+
+  // Sub-ratings (1-5, optional based on place type)
+  staffFriendliness Int?
+  dogFriendliness   Int?
+  treatsQuality     Int?
+  waterAvailability Int?
+  safetyRating      Int?
+  spaceRating       Int?
+
+  // Dog park specific
+  cleanliness     Int?
+  dogParentRating Int?
+
+  // Yes/No vote on features (user confirms/denies place features)
+  votedHasWater      Boolean?
+  votedHasFreeTreats Boolean?
+  votedPatioFriendly Boolean?
+  votedCanComeInside Boolean?
+
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([placeId, userId])
+}
+
+model FriendRequest {
+  id        String   @id @default(cuid())
+  fromDogId String
+  fromDog   Dog      @relation("FriendFrom", fields: [fromDogId], references: [id], onDelete: Cascade)
+  toDogId   String
+  toDog     Dog      @relation("FriendTo", fields: [toDogId], references: [id], onDelete: Cascade)
+  status    String   @default("PENDING") // PENDING, ACCEPTED, DECLINED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([fromDogId, toDogId])
 }

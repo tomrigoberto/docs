@@ -4,177 +4,379 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create categories
-  const categories = await Promise.all([
-    prisma.category.upsert({
-      where: { slug: "website-templates" },
-      update: {},
-      create: { name: "Website Templates", slug: "website-templates", icon: "Globe" },
-    }),
-    prisma.category.upsert({
-      where: { slug: "notion-templates" },
-      update: {},
-      create: { name: "Notion Templates", slug: "notion-templates", icon: "FileText" },
-    }),
-    prisma.category.upsert({
-      where: { slug: "design-kits" },
-      update: {},
-      create: { name: "Design Kits", slug: "design-kits", icon: "Palette" },
-    }),
-    prisma.category.upsert({
-      where: { slug: "social-media" },
-      update: {},
-      create: { name: "Social Media", slug: "social-media", icon: "Share2" },
-    }),
-    prisma.category.upsert({
-      where: { slug: "presentations" },
-      update: {},
-      create: { name: "Presentations", slug: "presentations", icon: "Monitor" },
-    }),
-    prisma.category.upsert({
-      where: { slug: "business" },
-      update: {},
-      create: { name: "Business", slug: "business", icon: "Briefcase" },
-    }),
-  ]);
+  const hash = await bcrypt.hash("demo1234", 10);
 
-  // Create demo creator
-  const creator = await prisma.user.upsert({
-    where: { email: "creator@demo.com" },
+  // Create demo users
+  const sarah = await prisma.user.upsert({
+    where: { email: "dogparent@demo.com" },
     update: {},
     create: {
-      name: "Alex Designer",
-      email: "creator@demo.com",
-      passwordHash: await bcrypt.hash("demo1234", 10),
-      role: "creator",
-      bio: "Professional designer with 10+ years of experience creating beautiful templates.",
+      name: "Sarah Johnson",
+      email: "dogparent@demo.com",
+      passwordHash: hash,
+      bio: "Dog mom to two rescue pups. Love finding new patios and parks!",
+      city: "Austin",
+      latitude: 30.2672,
+      longitude: -97.7431,
     },
   });
 
-  // Create demo buyer
-  await prisma.user.upsert({
-    where: { email: "buyer@demo.com" },
+  const mike = await prisma.user.upsert({
+    where: { email: "mike@demo.com" },
     update: {},
     create: {
-      name: "Demo Buyer",
-      email: "buyer@demo.com",
-      passwordHash: await bcrypt.hash("demo1234", 10),
-      role: "buyer",
+      name: "Mike Chen",
+      email: "mike@demo.com",
+      passwordHash: hash,
+      bio: "Weekend explorer with my golden retriever.",
+      city: "Austin",
+      latitude: 30.2849,
+      longitude: -97.7341,
     },
   });
 
-  // Create templates
-  const templates = [
-    {
-      title: "SaaS Landing Page Kit",
-      slug: "saas-landing-page-kit",
-      description: "A complete landing page template for SaaS products with 12 sections, dark/light modes, and responsive design.",
-      longDesc: "Launch your SaaS product with a stunning landing page. Includes hero section, features grid, pricing tables, testimonials, FAQ, CTA sections, and more. Fully responsive and customizable.",
-      price: 49,
-      salePrice: 39,
-      format: "figma",
-      featured: true,
-      categoryId: categories[0].id,
-      creatorId: creator.id,
-      downloads: 1243,
+  const lisa = await prisma.user.upsert({
+    where: { email: "lisa@demo.com" },
+    update: {},
+    create: {
+      name: "Lisa Park",
+      email: "lisa@demo.com",
+      passwordHash: hash,
+      bio: "Small dog enthusiast. Chihuahua mom.",
+      city: "Austin",
+      latitude: 30.2500,
+      longitude: -97.7500,
     },
-    {
-      title: "Startup Notion Workspace",
-      slug: "startup-notion-workspace",
-      description: "All-in-one Notion workspace for startups. Track OKRs, manage projects, run sprints, and document everything.",
-      longDesc: "The ultimate Notion workspace designed for startup teams. Includes project tracker, OKR dashboard, sprint board, meeting notes, wiki, CRM, and investor relations templates.",
-      price: 29,
-      format: "notion",
-      featured: true,
-      categoryId: categories[1].id,
-      creatorId: creator.id,
-      downloads: 2891,
-    },
-    {
-      title: "Brand Identity Kit Pro",
-      slug: "brand-identity-kit-pro",
-      description: "Complete brand identity kit with logo templates, color palettes, typography guides, and brand guidelines.",
-      longDesc: "Everything you need to build a professional brand identity. Includes 50+ logo templates, color palette generator, typography pairings, brand guideline document, and social media assets.",
-      price: 79,
-      salePrice: 59,
-      format: "figma",
-      featured: true,
-      categoryId: categories[2].id,
-      creatorId: creator.id,
-      downloads: 876,
-    },
-    {
-      title: "Instagram Content Bundle",
-      slug: "instagram-content-bundle",
-      description: "200+ Instagram post and story templates. Aesthetic designs for creators, coaches, and small businesses.",
-      longDesc: "Grow your Instagram presence with 200+ professionally designed templates. Includes carousel posts, single posts, stories, highlights covers, and reels covers. Easily customizable in Canva.",
-      price: 35,
-      format: "canva",
-      featured: true,
-      categoryId: categories[3].id,
-      creatorId: creator.id,
-      downloads: 3412,
-    },
-    {
-      title: "Pitch Deck Masterclass",
-      slug: "pitch-deck-masterclass",
-      description: "Investor-ready pitch deck template with 30+ slides. Used by YC-backed startups to raise millions.",
-      longDesc: "Create a compelling pitch deck that investors love. Includes problem/solution, market size, business model, traction, team, and financial slides. Clean, modern design with data visualization.",
-      price: 45,
-      format: "figma",
-      featured: false,
-      categoryId: categories[4].id,
-      creatorId: creator.id,
-      downloads: 1567,
-    },
-    {
-      title: "Business Plan Template",
-      slug: "business-plan-template",
-      description: "Professional business plan template with financial projections, market analysis, and executive summary sections.",
-      longDesc: "Write a comprehensive business plan with this structured template. Includes executive summary, company description, market analysis, organization structure, product line, marketing strategy, and financial projections.",
-      price: 25,
-      format: "docx",
-      featured: false,
-      categoryId: categories[5].id,
-      creatorId: creator.id,
-      downloads: 2134,
-    },
-    {
-      title: "E-commerce UI Kit",
-      slug: "ecommerce-ui-kit",
-      description: "Complete e-commerce UI kit with 80+ components, 20+ page layouts, and a full design system.",
-      longDesc: "Build beautiful online stores with this comprehensive UI kit. Includes product cards, checkout flows, user dashboards, admin panels, and a complete design system with tokens and components.",
-      price: 89,
-      salePrice: 69,
-      format: "figma",
-      featured: true,
-      categoryId: categories[0].id,
-      creatorId: creator.id,
-      downloads: 945,
-    },
-    {
-      title: "Content Creator Notion Hub",
-      slug: "content-creator-notion-hub",
-      description: "Notion workspace for content creators. Plan, create, schedule, and track all your content in one place.",
-      longDesc: "The ultimate content management system in Notion. Includes content calendar, idea bank, script templates, analytics tracker, brand deals CRM, and revenue dashboard.",
-      price: 19,
-      format: "notion",
-      featured: false,
-      categoryId: categories[1].id,
-      creatorId: creator.id,
-      downloads: 4521,
-    },
-  ];
+  });
 
-  for (const template of templates) {
-    await prisma.template.upsert({
-      where: { slug: template.slug },
-      update: {},
-      create: template,
-    });
-  }
+  // Create dogs
+  const buddy = await prisma.dog.create({
+    data: { name: "Buddy", breed: "Golden Retriever", age: 3, size: "LARGE", weight: 72, bio: "Loves belly rubs and swimming!", ownerId: sarah.id },
+  });
 
-  console.log("Seed data created successfully!");
+  const luna = await prisma.dog.create({
+    data: { name: "Luna", breed: "Labrador Mix", age: 2, size: "MEDIUM", weight: 45, bio: "Rescue pup who loves making friends at the park.", ownerId: sarah.id },
+  });
+
+  const max = await prisma.dog.create({
+    data: { name: "Max", breed: "Golden Retriever", age: 4, size: "LARGE", weight: 80, bio: "Tennis ball obsessed. Friendly to all dogs and humans.", ownerId: mike.id },
+  });
+
+  const coco = await prisma.dog.create({
+    data: { name: "Coco", breed: "Chihuahua", age: 5, size: "SMALL", weight: 6, bio: "Tiny but fierce! Loves patio dining.", ownerId: lisa.id },
+  });
+
+  // Create friend connections
+  await prisma.friendRequest.create({
+    data: { fromDogId: buddy.id, toDogId: max.id, status: "ACCEPTED" },
+  });
+  await prisma.friendRequest.create({
+    data: { fromDogId: luna.id, toDogId: coco.id, status: "ACCEPTED" },
+  });
+  await prisma.friendRequest.create({
+    data: { fromDogId: max.id, toDogId: luna.id, status: "PENDING" },
+  });
+
+  // Create places
+  const zilker = await prisma.place.create({
+    data: {
+      name: "Zilker Park Off-Leash Area",
+      type: "DOG_PARK",
+      address: "2100 Barton Springs Rd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78704",
+      latitude: 30.2669,
+      longitude: -97.7729,
+      description: "Huge off-leash area near Barton Springs. Dogs love the creek access and wide open fields.",
+      addedById: sarah.id,
+      hasWater: true,
+      hasWasteStations: true,
+      isOffLeashOk: true,
+      hasFencedArea: false,
+      hasParking: true,
+    },
+  });
+
+  const lazyDog = await prisma.place.create({
+    data: {
+      name: "Lazy Dog Restaurant & Bar",
+      type: "RESTAURANT",
+      address: "111 W 5th St",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78701",
+      latitude: 30.2674,
+      longitude: -97.7441,
+      description: "Dog-friendly patio with a special dog menu! They bring water bowls to your table.",
+      addedById: mike.id,
+      hasWater: true,
+      hasFreeTreats: true,
+      patioFriendly: true,
+      canComeInside: false,
+      hasDogMenu: true,
+      hasParking: true,
+    },
+  });
+
+  const barkPark = await prisma.place.create({
+    data: {
+      name: "Red Bud Isle Dog Park",
+      type: "DOG_PARK",
+      address: "3401 Redbud Trail",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78746",
+      latitude: 30.2890,
+      longitude: -97.7833,
+      description: "Island park surrounded by water. Off-leash paradise for water-loving dogs.",
+      addedById: sarah.id,
+      hasWater: true,
+      hasWasteStations: true,
+      isOffLeashOk: true,
+      hasParking: true,
+    },
+  });
+
+  const mozarts = await prisma.place.create({
+    data: {
+      name: "Mozart's Coffee Roasters",
+      type: "CAFE",
+      address: "3825 Lake Austin Blvd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78703",
+      latitude: 30.2906,
+      longitude: -97.7884,
+      description: "Lakeside coffee shop with a huge dog-friendly patio overlooking Lake Austin.",
+      addedById: lisa.id,
+      hasWater: true,
+      patioFriendly: true,
+      canComeInside: false,
+      hasParking: true,
+    },
+  });
+
+  const tomlinson = await prisma.place.create({
+    data: {
+      name: "Tomlinson's Feed & Pets",
+      type: "PET_STORE",
+      address: "9607 Research Blvd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78759",
+      latitude: 30.3870,
+      longitude: -97.7430,
+      description: "Local pet store that welcomes dogs inside! Free treats at the counter.",
+      addedById: mike.id,
+      hasWater: true,
+      hasFreeTreats: true,
+      canComeInside: true,
+      hasParking: true,
+    },
+  });
+
+  const brewDog = await prisma.place.create({
+    data: {
+      name: "Yard Bar",
+      type: "BREWERY",
+      address: "6700 Burnet Rd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78757",
+      latitude: 30.3375,
+      longitude: -97.7393,
+      description: "Bar + dog park combo! Fenced off-leash area with beer on tap. Dog heaven.",
+      addedById: sarah.id,
+      hasWater: true,
+      hasFreeTreats: false,
+      patioFriendly: true,
+      isOffLeashOk: true,
+      hasFencedArea: true,
+      hasParking: true,
+    },
+  });
+
+  const lakeTrail = await prisma.place.create({
+    data: {
+      name: "Lady Bird Lake Trail",
+      type: "TRAIL",
+      address: "1 S Lakeshore Blvd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78704",
+      latitude: 30.2614,
+      longitude: -97.7452,
+      description: "10-mile hike and bike trail around the lake. Dogs must be leashed but love the scenery.",
+      addedById: lisa.id,
+      hasWater: false,
+      hasWasteStations: true,
+      hasParking: true,
+    },
+  });
+
+  const vca = await prisma.place.create({
+    data: {
+      name: "VCA Animal Hospital",
+      type: "VET",
+      address: "4300 S Lamar Blvd",
+      city: "Austin",
+      state: "TX",
+      zipCode: "78704",
+      latitude: 30.2370,
+      longitude: -97.7897,
+      description: "Great vet clinic. Gentle with nervous dogs and always have treats.",
+      addedById: mike.id,
+      hasWater: true,
+      hasFreeTreats: true,
+      canComeInside: true,
+      hasParking: true,
+    },
+  });
+
+  // Create reviews
+  await prisma.review.create({
+    data: {
+      placeId: zilker.id,
+      userId: sarah.id,
+      overallRating: 5,
+      cleanliness: 4,
+      dogFriendliness: 5,
+      dogParentRating: 4,
+      safetyRating: 4,
+      spaceRating: 5,
+      comment: "Buddy absolutely loves this place! Huge open area and access to the creek. Gets a bit crowded on weekends but overall amazing.",
+      votedHasWater: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: zilker.id,
+      userId: mike.id,
+      overallRating: 4,
+      cleanliness: 3,
+      dogFriendliness: 5,
+      dogParentRating: 3,
+      safetyRating: 3,
+      spaceRating: 5,
+      comment: "Max goes crazy here. Lots of room to run. Some owners don't pick up after their dogs though. Could be cleaner.",
+      votedHasWater: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: lazyDog.id,
+      userId: sarah.id,
+      overallRating: 5,
+      staffFriendliness: 5,
+      dogFriendliness: 5,
+      treatsQuality: 5,
+      waterAvailability: 5,
+      safetyRating: 5,
+      comment: "Luna got her own grilled chicken from the dog menu! Staff was incredibly welcoming. They pet every dog that comes in.",
+      votedHasWater: true,
+      votedHasFreeTreats: true,
+      votedPatioFriendly: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: lazyDog.id,
+      userId: lisa.id,
+      overallRating: 4,
+      staffFriendliness: 5,
+      dogFriendliness: 4,
+      treatsQuality: 4,
+      waterAvailability: 5,
+      comment: "Coco loved the patio! Great water bowls at every table. A bit loud for small nervous dogs but overall pawsome!",
+      votedPatioFriendly: true,
+      votedCanComeInside: false,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: barkPark.id,
+      userId: mike.id,
+      overallRating: 5,
+      cleanliness: 4,
+      dogFriendliness: 5,
+      dogParentRating: 4,
+      safetyRating: 3,
+      spaceRating: 5,
+      comment: "Max's favorite spot in Austin! He swims for hours. Be careful near the deeper water areas but otherwise incredible.",
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: mozarts.id,
+      userId: lisa.id,
+      overallRating: 4,
+      staffFriendliness: 4,
+      waterAvailability: 4,
+      spaceRating: 4,
+      comment: "Beautiful lake views from the patio. Coco loves people-watching here. They bring water without asking!",
+      votedPatioFriendly: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: tomlinson.id,
+      userId: sarah.id,
+      overallRating: 5,
+      staffFriendliness: 5,
+      treatsQuality: 5,
+      comment: "Both my dogs go crazy when we pull into the parking lot. Free treats at the register and the staff knows them by name!",
+      votedHasFreeTreats: true,
+      votedCanComeInside: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: brewDog.id,
+      userId: mike.id,
+      overallRating: 5,
+      dogFriendliness: 5,
+      safetyRating: 5,
+      spaceRating: 5,
+      comment: "Beer AND a dog park? This is the best concept ever. Max plays while I enjoy a cold one. Fully fenced too!",
+      votedPatioFriendly: true,
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: brewDog.id,
+      userId: lisa.id,
+      overallRating: 3,
+      dogFriendliness: 3,
+      safetyRating: 3,
+      spaceRating: 4,
+      comment: "Fun concept but Coco is too small for the big dog area. They have a small dog section but it's pretty bare. Better for bigger dogs.",
+    },
+  });
+
+  await prisma.review.create({
+    data: {
+      placeId: vca.id,
+      userId: lisa.id,
+      overallRating: 4,
+      staffFriendliness: 5,
+      treatsQuality: 4,
+      safetyRating: 5,
+      comment: "Coco hates the vet but they make it as painless as possible. Treats galore and very gentle with small dogs.",
+      votedHasFreeTreats: true,
+    },
+  });
+
+  console.log("🐾 RRRuff seed data created successfully!");
+  console.log("   Demo login: dogparent@demo.com / demo1234");
 }
 
 main()
