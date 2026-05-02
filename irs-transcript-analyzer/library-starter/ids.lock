@@ -1,0 +1,13 @@
+# Observation ID Registry
+#
+# Every observation must reserve its ID here BEFORE it is added to observations/.
+# IDs are NEVER reused. Retired observations stay listed with status: retired.
+#
+# Format:
+#   <ID>: { status: <status>, file: <path-from-repo-root>, reserved_by: <handle>, date: <YYYY-MM-DD> }
+
+OBS-LIFE-0042:
+  status: active
+  file: observations/life_events/marital_status/OBS-LIFE-0042-marriage-detected.yaml
+  reserved_by: scaffold
+  date: 2026-05-02

@@ -1,0 +1,41 @@
+{
+  "household_id": "hh_single_to_mfj_2022",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Alex Carter",
+      "birth_year": 1985
+    }
+  ],
+  "entities": [],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2020,
+      "data": {
+        "header": { "filing_status": "Single" },
+        "tc_events": [{ "code": 150, "date": "2021-04-15", "amount": 0 }]
+      }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2021,
+      "data": {
+        "header": { "filing_status": "Single" },
+        "tc_events": [{ "code": 150, "date": "2022-04-15", "amount": 0 }]
+      }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": { "filing_status": "Married_Filing_Jointly" },
+        "tc_events": [{ "code": 150, "date": "2023-04-15", "amount": 0 }]
+      }
+    }
+  ]
+}

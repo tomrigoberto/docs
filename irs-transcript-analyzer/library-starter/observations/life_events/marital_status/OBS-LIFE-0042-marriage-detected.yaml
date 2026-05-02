@@ -1,0 +1,91 @@
+id: OBS-LIFE-0042
+version: 1.0.0
+status: active
+title: "Possible marriage during analysis window"
+category: life_events
+subcategory: marital_status
+severity: informational
+confidence: inferential
+applies_to:
+  - primary_taxpayer
+  - spouse
+temporal_scope: period
+audience_tags:
+  - planning
+  - beneficiary_review
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+  min_tax_years: 2
+  facts:
+    - filing_status_by_year
+
+logic:
+  pattern: filing_status_transition
+  parameters:
+    from_any_of: [Single, Head_of_Household]
+    to_any_of: [Married_Filing_Jointly, Married_Filing_Separately]
+    in_consecutive_years: true
+  capture:
+    transition_year: year_of_transition
+    prior_status: status_before_transition
+    new_status: status_after_transition
+
+statement: |
+  {{member.display_name}} appears to have married in {{transition_year}}.
+  Filing status changed from {{prior_status}} to {{new_status}}.
+
+discussion_points:
+  - "Confirm marriage date and update the household profile."
+  - "Review beneficiary designations on retirement accounts and life insurance."
+  - "Compare MFJ vs. MFS for {{transition_year}} and forward years."
+  - "Update estate planning documents (will, POA, healthcare directive)."
+
+sources:
+  - description: "Filing status, year before transition"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{transition_year - 1}}"
+    field_path: header.filing_status
+  - description: "Filing status, transition year"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{transition_year}}"
+    field_path: header.filing_status
+
+suppressed_by:
+  - OBS-LIFE-0044
+
+caveats: |
+  A filing-status change to MFJ or MFS may also reflect re-marriage after a prior
+  divorce, an amended return, or a correction. Confirm with the client before
+  relying on this observation.
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-INFERENTIAL
+
+test_cases:
+  - name: "Single → MFJ in 2022"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: true
+    expected_capture:
+      transition_year: 2022
+      prior_status: Single
+      new_status: Married_Filing_Jointly
+  - name: "MFJ throughout"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+  - name: "Spouse died in 2022 — should be suppressed by OBS-LIFE-0044"
+    fixture: fixtures/households/spouse_death_2022.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  reviewers: []
+  legal_review_required: false
+  effective:
+    start: "2026-05-01"
+  references:
+    - "IRC §1 — filing status rules"

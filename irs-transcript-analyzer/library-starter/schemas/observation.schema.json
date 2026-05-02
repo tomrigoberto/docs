@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tomrigoberto.example/schemas/observation.schema.json",
+  "title": "Observation",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "status",
+    "title",
+    "category",
+    "subcategory",
+    "severity",
+    "confidence",
+    "applies_to",
+    "temporal_scope",
+    "required_inputs",
+    "logic",
+    "statement",
+    "discussion_points",
+    "sources",
+    "disclaimers",
+    "test_cases",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^OBS-[A-Z]+-[0-9]{4}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": { "enum": ["draft", "active", "deprecated", "retired"] },
+    "title": { "type": "string", "maxLength": 80 },
+    "category": { "enum": ["life_events", "tax", "financial", "estate"] },
+    "subcategory": { "type": "string", "minLength": 1 },
+    "severity": { "enum": ["informational", "opportunity", "risk", "urgent"] },
+    "confidence": { "enum": ["deterministic", "inferential", "speculative"] },
+    "applies_to": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "primary_taxpayer",
+          "spouse",
+          "dependent",
+          "business_entity",
+          "trust",
+          "estate"
+        ]
+      }
+    },
+    "temporal_scope": { "enum": ["year", "period", "standing"] },
+    "audience_tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_inputs": {
+      "type": "object",
+      "required": ["transcript_types"],
+      "properties": {
+        "transcript_types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "account_transcript",
+              "return_transcript",
+              "record_of_account",
+              "wage_and_income",
+              "verification_of_non_filing"
+            ]
+          }
+        },
+        "min_tax_years": { "type": "integer", "minimum": 1 },
+        "facts": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "logic": { "$ref": "#/$defs/logicNode" },
+    "statement": { "type": "string", "minLength": 1 },
+    "discussion_points": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["description", "transcript_type", "member", "field_path"],
+        "properties": {
+          "description": { "type": "string" },
+          "transcript_type": {
+            "enum": [
+              "account_transcript",
+              "return_transcript",
+              "record_of_account",
+              "wage_and_income",
+              "verification_of_non_filing"
+            ]
+          },
+          "member": { "type": "string" },
+          "tax_year": { "type": ["integer", "string"] },
+          "field_path": { "type": "string" }
+        }
+      }
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^OBS-[A-Z]+-[0-9]{4}$" }
+    },
+    "suppressed_by": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^OBS-[A-Z]+-[0-9]{4}$" }
+    },
+    "caveats": { "type": "string" },
+    "disclaimers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^DISC-[A-Z0-9-]+$" }
+    },
+    "test_cases": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name", "fixture", "expected_fires"],
+        "properties": {
+          "name": { "type": "string" },
+          "fixture": { "type": "string" },
+          "expected_fires": { "type": "boolean" },
+          "expected_capture": { "type": "object" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["authors", "effective"],
+      "properties": {
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "reviewers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "legal_review_required": { "type": "boolean" },
+        "effective": {
+          "type": "object",
+          "required": ["start"],
+          "properties": {
+            "start": { "type": "string", "format": "date" },
+            "end": { "type": "string", "format": "date" }
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "logicNode": {
+      "oneOf": [
+        { "$ref": "#/$defs/patternRef" },
+        {
+          "type": "object",
+          "required": ["all_of"],
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/logicNode" }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["any_of"],
+          "properties": {
+            "any_of": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/logicNode" }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["none_of"],
+          "properties": {
+            "none_of": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/logicNode" }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["not"],
+          "properties": {
+            "not": { "$ref": "#/$defs/logicNode" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "patternRef": {
+      "type": "object",
+      "required": ["pattern"],
+      "properties": {
+        "pattern": { "type": "string" },
+        "parameters": { "type": "object" },
+        "capture": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

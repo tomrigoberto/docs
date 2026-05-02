@@ -1,0 +1,20 @@
+# Reusable disclaimer text snippets.
+# Reference these by ID from observations[*].disclaimers.
+# Edits here apply globally; do not inline disclaimer text in observations.
+
+DISC-NOT-TAX-ADVICE:
+  text: |
+    This analysis is generated from IRS transcript data and is informational only.
+    It does not constitute tax advice. Specific guidance should come from a
+    qualified tax professional after reviewing the client's full circumstances.
+
+DISC-NOT-LEGAL-ADVICE:
+  text: |
+    This analysis is informational only and does not constitute legal advice.
+    For matters involving estate planning, audits, liens, or levies, consult
+    qualified legal counsel.
+
+DISC-INFERENTIAL:
+  text: |
+    This observation is based on patterns in IRS transcript data and may not
+    reflect the underlying facts. Confirm with the client before relying on it.

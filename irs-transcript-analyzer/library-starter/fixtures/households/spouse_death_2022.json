@@ -1,0 +1,42 @@
+{
+  "household_id": "hh_spouse_death_2022",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Pat Vega",
+      "birth_year": 1965
+    },
+    {
+      "id": "m_spouse",
+      "role": "spouse",
+      "display_name": "Riley Vega",
+      "birth_year": 1963,
+      "deceased_date": "2022-08-14"
+    }
+  ],
+  "entities": [],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2021,
+      "data": { "header": { "filing_status": "Married_Filing_Jointly" }, "tc_events": [] }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": { "filing_status": "Married_Filing_Jointly" },
+        "tc_events": [{ "code": 540, "date": "2022-09-01", "amount": 0 }]
+      }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2023,
+      "data": { "header": { "filing_status": "Qualifying_Surviving_Spouse" }, "tc_events": [] }
+    }
+  ]
+}
