@@ -29,7 +29,7 @@
       "tax_year": 2022,
       "data": {
         "header": { "filing_status": "Married_Filing_Jointly" },
-        "tc_events": [{ "code": 540, "date": "2022-09-01", "amount": 0 }]
+        "tc_events": [{ "code": 540, "date": "2022-09-01", "amount": 0, "tax_year": 2022 }]
       }
     },
     {

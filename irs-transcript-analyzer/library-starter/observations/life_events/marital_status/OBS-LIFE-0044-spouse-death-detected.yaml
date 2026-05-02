@@ -1,0 +1,91 @@
+id: OBS-LIFE-0044
+version: 1.0.0
+status: active
+title: "Possible death of spouse during analysis window"
+category: life_events
+subcategory: marital_status
+severity: urgent
+confidence: inferential
+applies_to:
+  - primary_taxpayer
+temporal_scope: period
+audience_tags:
+  - planning
+  - beneficiary_review
+  - estate
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+  min_tax_years: 2
+  facts:
+    - tc_events
+    - filing_status_by_year
+
+logic:
+  any_of:
+    - pattern: transaction_code_present
+      parameters:
+        code: 540
+      capture:
+        death_year: event_year
+    - pattern: filing_status_transition
+      parameters:
+        from_any_of: [Married_Filing_Jointly, Married_Filing_Separately]
+        to_any_of: [Qualifying_Surviving_Spouse]
+        in_consecutive_years: false
+      capture:
+        death_year: year_of_transition
+
+statement: |
+  {{member.display_name}}'s transcripts indicate the possible death of a spouse around {{death_year}}.
+
+discussion_points:
+  - "Confirm date of death and update household records."
+  - "Review beneficiary designations and inherited account treatment."
+  - "Evaluate filing-status options for the qualifying-surviving-spouse years."
+  - "Coordinate with estate plan and any trusts."
+
+sources:
+  - description: "Indicator of decedent (TC 540) on Account Transcript"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{death_year}}"
+    field_path: tc_events
+  - description: "Filing status by year"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{death_year}}"
+    field_path: header.filing_status
+
+caveats: |
+  TC 540 may be posted for reasons other than the death of a spouse, including
+  records cleanup. The filing-status transition may also reflect re-marriage
+  followed by widowhood across multiple years. Confirm with the client.
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-NOT-LEGAL-ADVICE
+  - DISC-INFERENTIAL
+
+test_cases:
+  - name: "Spouse died 2022 (TC 540 + status to QSS)"
+    fixture: fixtures/households/spouse_death_2022.json
+    expected_fires: true
+    expected_capture:
+      death_year: 2022
+  - name: "MFJ stable household"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+  - name: "Single to MFJ household"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  reviewers: []
+  legal_review_required: true
+  effective:
+    start: "2026-05-01"
+  references:
+    - "IRS TC 540 — Indication of Posted Document - DECD"

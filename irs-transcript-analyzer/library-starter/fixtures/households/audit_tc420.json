@@ -1,0 +1,37 @@
+{
+  "household_id": "hh_audit_2021",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Casey Lee",
+      "birth_year": 1975
+    }
+  ],
+  "entities": [],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2021,
+      "data": {
+        "header": { "filing_status": "Single", "agi": 145000, "balance_due": 12500 },
+        "tc_events": [
+          { "code": 150, "date": "2022-04-15", "amount": 0, "tax_year": 2021 },
+          { "code": 420, "date": "2023-06-20", "amount": 0, "tax_year": 2021 }
+        ]
+      }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": { "filing_status": "Single", "agi": 152000 },
+        "tc_events": [
+          { "code": 150, "date": "2023-04-15", "amount": 0, "tax_year": 2022 }
+        ]
+      }
+    }
+  ]
+}

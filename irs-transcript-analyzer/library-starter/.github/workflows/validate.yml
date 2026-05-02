@@ -1,0 +1,30 @@
+name: validate-library
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validator deps
+        run: pip install pyyaml jsonschema
+      - name: Validate observations against schema and known patterns
+        run: python tools/validate.py
+      - name: Check ids.lock registry
+        run: python tools/check_ids.py
+      - name: Sanity-scan fixtures for plausible PII
+        run: python tools/scan_fixtures.py
+      - name: Run library tests against engine
+        if: ${{ false }}
+        # Enable once the engine package from `tomrigoberto/observations` is published
+        # or available as a checkout sibling. For now, run locally with:
+        #   docker compose exec backend python -m app.engine.library_test_runner
+        run: echo "skipped"

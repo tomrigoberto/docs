@@ -11,3 +11,15 @@ OBS-LIFE-0042:
   file: observations/life_events/marital_status/OBS-LIFE-0042-marriage-detected.yaml
   reserved_by: scaffold
   date: 2026-05-02
+
+OBS-LIFE-0044:
+  status: active
+  file: observations/life_events/marital_status/OBS-LIFE-0044-spouse-death-detected.yaml
+  reserved_by: scaffold
+  date: 2026-05-02
+
+OBS-TAX-0010:
+  status: active
+  file: observations/tax/compliance/OBS-TAX-0010-active-examination.yaml
+  reserved_by: scaffold
+  date: 2026-05-02

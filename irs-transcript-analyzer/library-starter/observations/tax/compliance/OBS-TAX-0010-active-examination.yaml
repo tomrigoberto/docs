@@ -1,0 +1,70 @@
+id: OBS-TAX-0010
+version: 1.0.0
+status: active
+title: "Active IRS examination on file"
+category: tax
+subcategory: compliance
+severity: urgent
+confidence: deterministic
+applies_to:
+  - primary_taxpayer
+  - spouse
+temporal_scope: year
+audience_tags:
+  - compliance
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+  facts:
+    - tc_events
+
+logic:
+  pattern: transaction_code_present
+  parameters:
+    code: 420
+  capture:
+    audit_year: event_year
+    audit_date: event_date
+
+statement: |
+  {{member.display_name}}'s account shows an examination indicator (TC 420) for tax year {{audit_year}}, posted {{audit_date}}.
+
+discussion_points:
+  - "Confirm scope and current status of the examination directly with the IRS."
+  - "Gather documentation supporting items most likely under review."
+  - "Decide on representation (CPA, EA, or attorney)."
+  - "Note any deadlines from recent IRS correspondence."
+
+sources:
+  - description: "TC 420 — Examination Indicator on Account Transcript"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{audit_year}}"
+    field_path: tc_events
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-NOT-LEGAL-ADVICE
+
+test_cases:
+  - name: "Audit on 2021 return"
+    fixture: fixtures/households/audit_tc420.json
+    expected_fires: true
+    expected_capture:
+      audit_year: 2021
+  - name: "MFJ stable, no audit"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+  - name: "Single to MFJ, no audit"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  reviewers: []
+  legal_review_required: true
+  effective:
+    start: "2026-05-01"
+  references:
+    - "IRS TC 420 — Examination Indicator"
