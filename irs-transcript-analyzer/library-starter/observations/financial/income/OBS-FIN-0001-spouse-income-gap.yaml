@@ -1,0 +1,81 @@
+id: OBS-FIN-0001
+version: 1.0.0
+status: active
+title: "Significant wage gap between spouses"
+category: financial
+subcategory: income
+severity: opportunity
+confidence: inferential
+applies_to:
+  - primary_taxpayer
+temporal_scope: year
+audience_tags:
+  - planning
+  - retirement
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+
+logic:
+  pattern: compare_members
+  parameters:
+    member_a: primary_taxpayer
+    member_b: spouse
+    field: header.wages_total
+    comparison: absolute_difference_gt
+    threshold: 100000
+  capture:
+    gap_year: matching_year
+    gap_amount: difference_value
+    primary_wages: value_a
+    spouse_wages: value_b
+
+statement: |
+  In {{gap_year}}, wages reported for the spouses differed by approximately {{currency(gap_amount)}} ({{currency(primary_wages)}} vs {{currency(spouse_wages)}}). This often opens spousal-IRA, retirement-plan, and beneficiary-strategy opportunities.
+
+discussion_points:
+  - "Confirm both spouses' current employment and benefit elections."
+  - "Maximize spousal IRA contributions for the lower-earning spouse."
+  - "Compare projected Social Security benefits and consider claiming strategy."
+  - "Revisit beneficiary designations on retirement and life-insurance accounts."
+
+sources:
+  - description: "Wages from primary taxpayer's transcript"
+    transcript_type: account_transcript
+    member: primary_taxpayer
+    tax_year: "{{gap_year}}"
+    field_path: header.wages_total
+  - description: "Wages from spouse's transcript"
+    transcript_type: account_transcript
+    member: spouse
+    tax_year: "{{gap_year}}"
+    field_path: header.wages_total
+
+caveats: |
+  Wage figures on transcripts reflect the tax year filed and may not capture
+  current-year employment changes. Confirm with the client before relying on
+  trend-based recommendations.
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-INFERENTIAL
+
+test_cases:
+  - name: "Wage gap of $185,000 in 2022"
+    fixture: fixtures/households/dual_income_gap.json
+    expected_fires: true
+    expected_capture:
+      gap_year: 2022
+  - name: "MFJ stable (no wage data on transcripts)"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+  - name: "Single household (no spouse)"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  legal_review_required: false
+  effective:
+    start: "2026-05-01"

@@ -1,0 +1,75 @@
+id: OBS-TAX-0070
+version: 1.0.0
+status: active
+title: "Examination opened within 18 months of return filing"
+category: tax
+subcategory: compliance
+severity: risk
+confidence: deterministic
+applies_to:
+  - primary_taxpayer
+  - spouse
+temporal_scope: year
+audience_tags:
+  - compliance
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+
+logic:
+  pattern: transaction_code_sequence
+  parameters:
+    first: { code: 150 }
+    then: { code: 420 }
+    same_tax_year: true
+    within_days: 540
+  capture:
+    audit_tax_year: tax_year
+    days_to_audit: days_between_events
+
+statement: |
+  {{member.display_name}}'s account shows an examination indicator (TC 420) opened {{days_to_audit}} days after the return for tax year {{audit_tax_year}} was filed.
+
+discussion_points:
+  - "Confirm whether the examination is still active."
+  - "Identify which return positions are most likely under review."
+  - "Coordinate representation and document gathering."
+  - "Review any related correspondence (CP2000, 4549, etc.)."
+
+sources:
+  - description: "TC 150 (return filed) on Account Transcript"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{audit_tax_year}}"
+    field_path: tc_events
+  - description: "TC 420 (examination indicator) on Account Transcript"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: "{{audit_tax_year}}"
+    field_path: tc_events
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-NOT-LEGAL-ADVICE
+
+test_cases:
+  - name: "Audit ~14 months after filing"
+    fixture: fixtures/households/audit_tc420.json
+    expected_fires: true
+    expected_capture:
+      audit_tax_year: 2021
+  - name: "MFJ stable household"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+  - name: "Single → MFJ household (no audit)"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  legal_review_required: true
+  effective:
+    start: "2026-05-01"
+  references:
+    - "IRS TC 150 (Return Filed); TC 420 (Examination Indicator)"

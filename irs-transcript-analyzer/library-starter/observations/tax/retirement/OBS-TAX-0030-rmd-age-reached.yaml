@@ -1,0 +1,68 @@
+id: OBS-TAX-0030
+version: 1.0.0
+status: active
+title: "Required minimum distribution age reached"
+category: tax
+subcategory: retirement
+severity: opportunity
+confidence: deterministic
+applies_to:
+  - primary_taxpayer
+  - spouse
+temporal_scope: standing
+audience_tags:
+  - retirement
+  - planning
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+
+logic:
+  pattern: age_in_year
+  parameters:
+    in_year: 2024
+    comparison: gte
+    age: 73
+  capture:
+    age_in_2024: evaluated_age
+
+statement: |
+  {{member.display_name}} reached age {{age_in_2024}} in 2024 and is now subject to Required Minimum Distributions (RMDs) from traditional IRA and 401(k)-type accounts.
+
+discussion_points:
+  - "Confirm whether RMDs were taken for tax year 2024."
+  - "Consider Qualified Charitable Distributions (QCDs) if charitably inclined."
+  - "Review beneficiary designations and successor planning for IRAs."
+  - "Plan future-year withholdings now that RMDs are part of taxable income."
+
+sources:
+  - description: "Member birth year on profile"
+    transcript_type: account_transcript
+    member: "{{member.id}}"
+    tax_year: 2024
+    field_path: member.birth_year
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+
+test_cases:
+  - name: "Senior reaches RMD age in 2024"
+    fixture: fixtures/households/senior_rmd_age.json
+    expected_fires: true
+    expected_capture:
+      age_in_2024: 74
+  - name: "Mid-career taxpayer (Single → MFJ household)"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+  - name: "MFJ stable household"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  legal_review_required: false
+  effective:
+    start: "2026-05-01"
+  references:
+    - "IRC §401(a)(9); SECURE 2.0 Act"

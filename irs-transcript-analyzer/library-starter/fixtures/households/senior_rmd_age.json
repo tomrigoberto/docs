@@ -1,0 +1,34 @@
+{
+  "household_id": "hh_senior_2024",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Pat Morgan",
+      "birth_year": 1950
+    }
+  ],
+  "entities": [],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2023,
+      "data": {
+        "header": { "filing_status": "Single" },
+        "tc_events": [
+          { "code": 150, "date": "2024-04-15", "amount": 0, "tax_year": 2023 }
+        ]
+      }
+    },
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2024,
+      "data": {
+        "header": { "filing_status": "Single" },
+        "tc_events": []
+      }
+    }
+  ]
+}

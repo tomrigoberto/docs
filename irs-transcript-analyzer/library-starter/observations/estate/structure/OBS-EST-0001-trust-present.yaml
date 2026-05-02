@@ -1,0 +1,62 @@
+id: OBS-EST-0001
+version: 1.0.0
+status: active
+title: "Trust entity present in household"
+category: estate
+subcategory: structure
+severity: informational
+confidence: deterministic
+applies_to:
+  - primary_taxpayer
+temporal_scope: standing
+audience_tags:
+  - estate
+  - planning
+
+required_inputs:
+  transcript_types:
+    - account_transcript
+
+logic:
+  pattern: presence_of_entity
+  parameters:
+    entity_type_any_of: [trust]
+  capture:
+    trust_id: entity_id
+    trust_name: entity_name
+
+statement: |
+  The household profile includes a trust ({{trust_name}}). Confirm trust transcripts are reflected in this analysis and that the estate plan accounts for it.
+
+discussion_points:
+  - "Confirm trust type (revocable, irrevocable, charitable) and tax-filing posture."
+  - "Verify trust transcripts (Form 1041) are included where required."
+  - "Check whether the trust is a designated beneficiary on retirement accounts."
+  - "Coordinate with the estate-planning attorney to ensure documents are current."
+
+sources:
+  - description: "Trust entity recorded on the household profile"
+    transcript_type: account_transcript
+    member: "{{trust_id}}"
+    field_path: entity.profile
+
+disclaimers:
+  - DISC-NOT-TAX-ADVICE
+  - DISC-NOT-LEGAL-ADVICE
+
+test_cases:
+  - name: "Household with a trust"
+    fixture: fixtures/households/household_with_trust.json
+    expected_fires: true
+  - name: "Single household (no trust)"
+    fixture: fixtures/households/single_to_mfj_2022.json
+    expected_fires: false
+  - name: "MFJ stable household (no trust)"
+    fixture: fixtures/households/mfj_stable.json
+    expected_fires: false
+
+metadata:
+  authors: [scaffold]
+  legal_review_required: true
+  effective:
+    start: "2026-05-01"

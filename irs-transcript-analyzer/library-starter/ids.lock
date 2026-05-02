@@ -23,3 +23,27 @@ OBS-TAX-0010:
   file: observations/tax/compliance/OBS-TAX-0010-active-examination.yaml
   reserved_by: scaffold
   date: 2026-05-02
+
+OBS-TAX-0030:
+  status: active
+  file: observations/tax/retirement/OBS-TAX-0030-rmd-age-reached.yaml
+  reserved_by: scaffold
+  date: 2026-05-02
+
+OBS-TAX-0070:
+  status: active
+  file: observations/tax/compliance/OBS-TAX-0070-exam-after-filing.yaml
+  reserved_by: scaffold
+  date: 2026-05-02
+
+OBS-FIN-0001:
+  status: active
+  file: observations/financial/income/OBS-FIN-0001-spouse-income-gap.yaml
+  reserved_by: scaffold
+  date: 2026-05-02
+
+OBS-EST-0001:
+  status: active
+  file: observations/estate/structure/OBS-EST-0001-trust-present.yaml
+  reserved_by: scaffold
+  date: 2026-05-02

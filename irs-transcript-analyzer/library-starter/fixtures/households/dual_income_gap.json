@@ -1,0 +1,50 @@
+{
+  "household_id": "hh_dual_income_gap",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Sam Park",
+      "birth_year": 1975
+    },
+    {
+      "id": "m_spouse",
+      "role": "spouse",
+      "display_name": "Drew Park",
+      "birth_year": 1977
+    }
+  ],
+  "entities": [],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": {
+          "filing_status": "Married_Filing_Jointly",
+          "wages_total": 220000,
+          "agi": 235000
+        },
+        "tc_events": [
+          { "code": 150, "date": "2023-04-15", "amount": 0, "tax_year": 2022 }
+        ]
+      }
+    },
+    {
+      "member_id": "m_spouse",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": {
+          "filing_status": "Married_Filing_Jointly",
+          "wages_total": 35000,
+          "agi": 235000
+        },
+        "tc_events": [
+          { "code": 150, "date": "2023-04-15", "amount": 0, "tax_year": 2022 }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "household_id": "hh_with_trust",
+  "members": [
+    {
+      "id": "m_primary",
+      "role": "primary_taxpayer",
+      "display_name": "Robin Ellis",
+      "birth_year": 1968
+    }
+  ],
+  "entities": [
+    {
+      "id": "e_trust",
+      "type": "trust",
+      "name": "Ellis Family Revocable Trust"
+    }
+  ],
+  "transcripts": [
+    {
+      "member_id": "m_primary",
+      "transcript_type": "account_transcript",
+      "tax_year": 2022,
+      "data": {
+        "header": { "filing_status": "Single" },
+        "tc_events": [
+          { "code": 150, "date": "2023-04-15", "amount": 0, "tax_year": 2022 }
+        ]
+      }
+    }
+  ]
+}
