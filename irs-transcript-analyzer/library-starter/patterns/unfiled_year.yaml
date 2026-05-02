@@ -1,0 +1,26 @@
+pattern: unfiled_year
+version: 1.0.0
+description: |
+  Detects verified non-filing or absence of TC 150 for a year where filing was expected
+  (income reported by payers).
+
+parameters:
+  in_year_range:
+    type: "[int, int]"
+    required: true
+  require_income_reported:
+    type: boolean
+    required: false
+    default: true
+    description: "When true, only fires if W&I shows income for the year."
+
+captures:
+  unfiled_year:
+    type: int
+  income_reported_amount:
+    type: number
+
+english_template: |
+  Year {{unfiled_year}} appears unfiled{{ ' despite reported income' if require_income_reported else '' }}.
+
+use_when: "Compliance triage; flagging years that may need a return filed."

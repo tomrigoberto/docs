@@ -1,0 +1,40 @@
+pattern: field_compare
+version: 1.0.0
+description: |
+  Detects that a numeric field crosses a threshold in a year (or any year of a range).
+
+parameters:
+  field:
+    type: string
+    required: true
+    description: "Documented fact path (e.g., agi, wages.total, withholding.total, balance_due)."
+  comparison:
+    type: enum
+    enum: [gt, gte, lt, lte, eq, neq, between]
+    required: true
+  value:
+    type: number
+    required: false
+    description: "Required for non-'between' comparisons."
+  value_range:
+    type: "[number, number]"
+    required: false
+    description: "Required when comparison == between."
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  matching_year:
+    type: int
+  field_value:
+    type: number
+
+english_template: |
+  {{field}} {{comparison}} {{value or value_range}}{{ ' in ' + in_year if in_year else '' }}.
+
+use_when: "Threshold crossings on AGI, refund, balance due, withholding, total tax."
+do_not_use_when: "Comparing across years (use field_change_year_over_year)."

@@ -1,0 +1,45 @@
+pattern: transaction_code_sequence
+version: 1.0.0
+description: |
+  Detects TC X followed by TC Y on the same member, optionally constrained to the
+  same tax year and within a calendar-day window.
+
+parameters:
+  first:
+    type: "object { code: int, action_code_any_of?: list[int] }"
+    required: true
+  then:
+    type: "object { code: int, action_code_any_of?: list[int] }"
+    required: true
+  same_tax_year:
+    type: boolean
+    required: false
+    default: false
+  within_days:
+    type: int
+    required: false
+    description: "Maximum calendar days between the first and then events."
+  in_year_range:
+    type: "[int, int]"
+    required: false
+    description: "Restrict the FIRST event's tax year."
+
+captures:
+  first_event_date:
+    type: date
+    description: "Date of the first event."
+  then_event_date:
+    type: date
+    description: "Date of the then event."
+  tax_year:
+    type: int
+  days_between_events:
+    type: int
+
+english_template: |
+  TC {{first.code}} followed by TC {{then.code}}
+  {{ 'in the same tax year' if same_tax_year else '' }}
+  {{ 'within ' + within_days + ' days' if within_days else '' }}.
+
+use_when: "AUR opened soon after filing; levy following lien within a window; multi-step examination chains."
+do_not_use_when: "You only care about a single TC."

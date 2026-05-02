@@ -1,0 +1,31 @@
+pattern: age_in_year
+version: 1.0.0
+description: |
+  Detects that the member's age in a given year crosses a threshold. Age is computed
+  from member.birth_year, which must be set on the member.
+
+parameters:
+  comparison:
+    type: enum
+    enum: [gte, gt, lt, lte, eq, between]
+    required: true
+  age:
+    type: int
+    required: false
+    description: "Required for non-'between' comparisons."
+  age_range:
+    type: "[int, int]"
+    required: false
+    description: "Required when comparison == between."
+  in_year:
+    type: int
+    required: true
+
+captures:
+  evaluated_age:
+    type: int
+
+english_template: |
+  Age in {{in_year}} {{comparison}} {{age or age_range}}.
+
+use_when: "RMD age (73 starting 2023), Social Security age, catch-up contribution eligibility (50+)."

@@ -1,0 +1,27 @@
+pattern: transaction_code_absent
+version: 1.0.0
+description: |
+  Detects that a specific Transaction Code is NOT present in a window. Useful when
+  absence is meaningful, e.g., no return filed when one was expected.
+
+parameters:
+  code:
+    type: int
+    required: true
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  absent_in_year:
+    type: int
+    description: "The year in which the code was absent."
+
+english_template: |
+  TC {{code}} is not present{{ ' in ' + in_year if in_year else '' }}.
+
+use_when: "Detecting missing-return signals; pairs with form_present to triangulate non-filing."
+do_not_use_when: "You can use unfiled_year (it's safer and more specific)."

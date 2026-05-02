@@ -1,0 +1,48 @@
+pattern: compare_members
+version: 1.0.0
+description: |
+  Detects a comparison between two specific members in the household for a numeric field.
+
+parameters:
+  member_a:
+    type: Role
+    required: true
+  member_b:
+    type: Role
+    required: true
+  field:
+    type: string
+    required: true
+  comparison:
+    type: enum
+    enum: [absolute_difference_gt, ratio_gt, ratio_lt, a_gt_b, a_lt_b]
+    required: true
+  threshold:
+    type: number
+    required: true
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+  only_in_years_where:
+    type: "logic node (nested pattern)"
+    required: false
+    description: "Restrict matching to years where this nested logic also holds."
+
+captures:
+  matching_year:
+    type: int
+  value_a:
+    type: number
+  value_b:
+    type: number
+  difference_value:
+    type: number
+
+english_template: |
+  Compare {{member_a}} vs {{member_b}} on {{field}} — {{comparison}} {{threshold}}.
+
+use_when: "Income-gap observations between spouses; primary vs business owner comparisons."
+do_not_use_when: "You're comparing the same member across years (use field_change_year_over_year)."

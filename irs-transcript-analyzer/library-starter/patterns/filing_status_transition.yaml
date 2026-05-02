@@ -1,0 +1,42 @@
+pattern: filing_status_transition
+version: 1.0.0
+description: |
+  Detects the member's filing status changing between years. Useful for inferring
+  marriage, divorce, head-of-household changes.
+
+parameters:
+  from_any_of:
+    type: list[FilingStatus]
+    required: true
+    description: "Statuses that count as the 'before' state."
+  to_any_of:
+    type: list[FilingStatus]
+    required: true
+    description: "Statuses that count as the 'after' state."
+  in_consecutive_years:
+    type: boolean
+    required: false
+    default: true
+    description: "If false, gap years are tolerated between the from and to years."
+  in_year_range:
+    type: "[int, int]"
+    required: false
+    description: "Restrict the transition to within this tax-year range."
+
+captures:
+  year_of_transition:
+    type: int
+    description: "The first tax year that contains the 'after' status."
+  status_before_transition:
+    type: FilingStatus
+    description: "Filing status in the year immediately before the transition."
+  status_after_transition:
+    type: FilingStatus
+    description: "Filing status in the transition year."
+
+english_template: |
+  Filing status transitioned from {{from_any_of}} to {{to_any_of}}
+  {{ 'in consecutive years' if in_consecutive_years else 'across the analysis window' }}.
+
+use_when: "Detecting marriage, divorce, head-of-household changes."
+do_not_use_when: "You only care that the status equals a value (use filing_status_equals)."

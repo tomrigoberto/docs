@@ -1,0 +1,37 @@
+pattern: filing_status_equals
+version: 1.0.0
+description: |
+  Detects that filing status equals a specific value, optionally in a specific year
+  or every year of a range.
+
+parameters:
+  equals_any_of:
+    type: list[FilingStatus]
+    required: true
+    description: "Filing statuses that satisfy the rule."
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+  for_all_years_in_range:
+    type: boolean
+    required: false
+    default: false
+    description: "If true, every year in range must match (not just any)."
+
+captures:
+  matching_year:
+    type: int
+    description: "First matching tax year."
+  matched_status:
+    type: FilingStatus
+    description: "The matched filing status value."
+
+english_template: |
+  Filing status equals one of {{equals_any_of}}
+  {{ 'in ' + in_year if in_year else 'in years ' + in_year_range }}.
+
+use_when: "Scoping rules to households filing a particular way."
+do_not_use_when: "Detecting status changes (use filing_status_transition)."

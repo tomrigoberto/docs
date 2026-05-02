@@ -1,0 +1,25 @@
+pattern: years_of_data_present
+version: 1.0.0
+description: |
+  Detects that the member has at least N years of a given transcript type. Often used
+  as a guard inside all_of to avoid firing on insufficient data.
+
+parameters:
+  transcript_type:
+    type: enum
+    enum: [account_transcript, return_transcript, record_of_account, wage_and_income, verification_of_non_filing]
+    required: true
+  min_years:
+    type: int
+    required: true
+
+captures:
+  years_present:
+    type: list[int]
+  years_present_count:
+    type: int
+
+english_template: |
+  At least {{min_years}} years of {{transcript_type}} data present.
+
+use_when: "Guarding rules that need history (e.g., YoY change rules) from firing on first-year clients."

@@ -1,0 +1,35 @@
+pattern: count_threshold
+version: 1.0.0
+description: |
+  Detects that the count of records (TC events or forms) matching a filter crosses a threshold.
+
+parameters:
+  record_type:
+    type: enum
+    enum: [tc_event, form]
+    required: true
+  where:
+    type: object
+    required: false
+  comparison:
+    type: enum
+    enum: [gt, gte, lt, lte, eq]
+    required: true
+  value:
+    type: int
+    required: true
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  count_value:
+    type: int
+
+english_template: |
+  Count of {{record_type}} matching filter {{where or '(any)'}} {{comparison}} {{value}}.
+
+use_when: "Multiple distributions in a year; multiple penalty assessments; multiple W-2s indicating job changes."

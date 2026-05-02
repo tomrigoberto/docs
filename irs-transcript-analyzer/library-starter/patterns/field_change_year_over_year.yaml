@@ -1,0 +1,36 @@
+pattern: field_change_year_over_year
+version: 1.0.0
+description: |
+  Detects a material year-over-year change in a numeric field.
+
+parameters:
+  field:
+    type: string
+    required: true
+  comparison:
+    type: enum
+    enum: [absolute_increase_gt, absolute_decrease_gt, percent_increase_gt, percent_decrease_gt, absolute_change_gt]
+    required: true
+  threshold:
+    type: number
+    required: true
+    description: "Dollars for absolute_*; fraction (0.20 = 20%) for percent_*."
+  in_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  change_year:
+    type: int
+    description: "The later of the two years."
+  prior_value:
+    type: number
+  current_value:
+    type: number
+  delta:
+    type: number
+
+english_template: |
+  {{field}} changed YoY exceeding {{threshold}} ({{comparison}}).
+
+use_when: "Material AGI swings, big drops in withholding, sudden wage spikes."

@@ -1,0 +1,34 @@
+pattern: aggregate_threshold
+version: 1.0.0
+description: |
+  Detects that a sum, average, max, or min across years crosses a threshold.
+
+parameters:
+  field:
+    type: string
+    required: true
+  aggregate:
+    type: enum
+    enum: [sum, avg, max, min]
+    required: true
+  comparison:
+    type: enum
+    enum: [gt, gte, lt, lte]
+    required: true
+  value:
+    type: number
+    required: true
+  over_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  aggregate_value:
+    type: number
+  years_included:
+    type: list[int]
+
+english_template: |
+  {{aggregate}}({{field}}) {{comparison}} {{value}} over {{over_year_range or 'all years'}}.
+
+use_when: "Cumulative penalty exposure, multi-year IRA contribution totals, sustained underwithholding."

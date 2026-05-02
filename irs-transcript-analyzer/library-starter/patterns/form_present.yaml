@@ -1,0 +1,48 @@
+pattern: form_present
+version: 1.0.0
+description: |
+  Detects an information return on the Wage & Income transcript. Filterable by year,
+  payer, and form-specific field values.
+
+parameters:
+  form_type:
+    type: string
+    required: true
+    description: "Canonical form code: W-2, 1099-R, 1099-INT, 1099-DIV, 1099-B, 1099-MISC, 1099-NEC, 5498, 5498-SA, 1098, 1098-E, etc."
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+  where:
+    type: object
+    required: false
+    description: |
+      Form-specific filters. Examples:
+        taxable_amount_gt: 0
+        distribution_code_any_of: ["2", "7"]
+        payer_contains: "Vanguard"
+        box_1_gt: 1000
+
+captures:
+  matching_year:
+    type: int
+    description: "First matching tax year."
+  count_of_matches:
+    type: int
+  payers:
+    type: list[string]
+  sum_of_taxable_amount:
+    type: number
+    description: "Available when the form has a taxable_amount field."
+  sum_of_box_1:
+    type: number
+    description: "Available for forms whose primary numeric field is box 1."
+
+english_template: |
+  {{form_type}} reported{{ ' in ' + in_year if in_year else '' }}
+  {{ 'matching filters' if where else '' }}.
+
+use_when: "Detecting retirement distributions, brokerage activity, dividends, IRA contributions, mortgage interest."
+do_not_use_when: "Detecting absence (use form_absent)."

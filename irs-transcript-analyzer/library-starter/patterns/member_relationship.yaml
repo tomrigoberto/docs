@@ -1,0 +1,18 @@
+pattern: member_relationship
+version: 1.0.0
+description: |
+  Detects that the current member fills a specific role in the household.
+
+parameters:
+  role_any_of:
+    type: list[Role]
+    required: true
+
+captures:
+  member_role:
+    type: Role
+
+english_template: |
+  Member's role is one of {{role_any_of}}.
+
+use_when: "Scoping observations to specific roles (e.g., dependents, business owners)."

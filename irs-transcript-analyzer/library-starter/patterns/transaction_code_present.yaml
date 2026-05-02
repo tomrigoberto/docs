@@ -1,0 +1,51 @@
+pattern: transaction_code_present
+version: 1.0.0
+description: |
+  Detects that a specific Transaction Code (TC) is present on the Account Transcript
+  for the member, optionally filtered by action code, year, or amount.
+
+parameters:
+  code:
+    type: int
+    required: true
+    description: "The TC code, e.g., 150, 290, 420, 922."
+  action_code_any_of:
+    type: list[int]
+    required: false
+    description: "For TCs that carry an action code (e.g., TC 971)."
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+  amount_gt:
+    type: number
+    required: false
+  amount_lt:
+    type: number
+    required: false
+  amount_between:
+    type: "[number, number]"
+    required: false
+
+captures:
+  event_year:
+    type: int
+    description: "Tax year of the event."
+  event_date:
+    type: date
+    description: "Posting/transaction date of the event."
+  event_amount:
+    type: number
+    description: "Amount associated with the event, if any."
+  event_action_code:
+    type: int
+    description: "Action code associated with the event, if any."
+
+english_template: |
+  TC {{code}}{{ ' with action code ' + action_code_any_of if action_code_any_of }}
+  is present{{ ' in ' + in_year if in_year else '' }}.
+
+use_when: "Penalty assessments (240/270/280), liens (582), levies (670/671), audits (420), AUR (922), CNC (530), installment agreements (971/063)."
+do_not_use_when: "You need a sequence of TCs (use transaction_code_sequence)."

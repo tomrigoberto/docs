@@ -1,0 +1,23 @@
+pattern: presence_of_entity
+version: 1.0.0
+description: |
+  Detects that the household includes a specific kind of non-individual entity.
+
+parameters:
+  entity_type_any_of:
+    type: list[enum]
+    enum: [business, trust, estate]
+    required: true
+
+captures:
+  entity_id:
+    type: string
+  entity_type:
+    type: string
+  entity_name:
+    type: string
+
+english_template: |
+  Household contains an entity of type {{entity_type_any_of}}.
+
+use_when: "Scoping estate-category rules to households with a trust; scoping business rules to households with a business entity."

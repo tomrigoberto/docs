@@ -1,0 +1,24 @@
+pattern: form_absent
+version: 1.0.0
+description: |
+  Detects that no instance of a given form type was reported in the window.
+
+parameters:
+  form_type:
+    type: string
+    required: true
+  in_year:
+    type: int
+    required: false
+  in_year_range:
+    type: "[int, int]"
+    required: false
+
+captures:
+  absent_in_year:
+    type: int
+
+english_template: |
+  No {{form_type}} reported{{ ' in ' + in_year if in_year else '' }}.
+
+use_when: "Pair with form_present in prior years to detect employment ending or coverage gaps."
